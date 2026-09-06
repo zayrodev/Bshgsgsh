@@ -1,0 +1,950 @@
+/* إزالة الهوامش ومنع التمرير */
+/* منع تحديد النصوص والسحب في كامل اللعبة لتبدو كتطبيق أصلي */
+* {
+    -webkit-touch-callout: none; /* أنظمة iOS */
+    -webkit-user-select: none;   /* متصفحات Safari و Chrome */
+    -moz-user-select: none;      /* متصفح Firefox */
+    -ms-user-select: none;       /* متصفح Edge */
+    user-select: none;           /* المعيار القياسي */
+    -webkit-tap-highlight-color: transparent; /* إزالة مربع التحديد الأزرق المزعج في الهواتف */
+}
+.game-logo {
+    max-width: 80%; /* يضمن أن الصورة لن تتجاوز عرض الحاوية */
+    height: auto;   /* يحافظ على أبعاد الصورة الأصلية */
+    margin-bottom: 30px; /* نفس المسافة التي كانت موجودة أسفل النص القديم */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+abody, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #081A33; /* الخلفية الزرقاء الداكنة */
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #FFFFFF; /* نص أبيض لتباين واضح */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    touch-action: none;
+}
+
+/* اللوحة المخفية افتراضياً */
+#gameCanvas {
+    display: none;
+    background: #081A33; /* مطابقة لون خلفية اللعب */
+    width: 100%;
+    height: 100%;
+}
+
+/* تصميم القوائم */
+.menu-container {
+    text-align: center;
+    width: 95%; 
+    max-width: 500px; 
+    box-sizing: border-box; 
+    position: absolute;
+    top: 50%; /* تحديد نقطة البداية العمودية في المنتصف */
+    left: 50%; /* تحديد نقطة البداية الأفقية في المنتصف */
+    transform: translate(-50%, -50%); /* سحب العنصر ليتمركز تماماً في الوسط */
+    z-index: 10;
+}
+#mainMenu {
+    top: 35%; /* رفع القائمة الرئيسية فقط للأعلى */
+}
+
+h1 {
+    color: #00AEEF; 
+    margin-bottom: 30px;
+    font-size: 32px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+}
+h2 {
+    color: #00AEEF;
+    margin-bottom: 20px;
+    text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.8);
+}
+
+
+.hidden {
+    display: none !important;
+}
+
+
+/* تصميم الأزرار */
+button {
+    background: #00AEEF;
+    color: #081A33;
+    padding: 15px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-sizing: border-box;
+    border-radius: 0; 
+    border: 4px solid #FFFFFF; 
+    box-shadow: 
+        4px 4px 0px #081A33, 
+        inset -4px -4px 0px rgba(0,0,0,0.2);
+    text-transform: uppercase;
+    transition: transform 0.1s; 
+    
+    /* الخصائص المعدلة لتصغير العرض وتوسيط الأزرار */
+    width: 80%; 
+    margin: 15px auto; 
+    display: block; 
+}
+
+
+button:hover {
+    background: #008CBE;
+    transform: translate(2px, 2px); 
+    box-shadow: 
+        2px 2px 0px #081A33,
+        inset -4px -4px 0px rgba(0,0,0,0.2);
+}
+
+button:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+}
+
+.btn-secondary {
+    background: #081A33;
+    color: #00AEEF;
+    border: 4px solid #00AEEF;
+    box-shadow: 
+        4px 4px 0px #005F80,
+        inset -4px -4px 0px rgba(0,0,0,0.4);
+}
+
+.btn-secondary:hover {
+    background: rgba(0, 174, 239, 0.1);
+    transform: translate(2px, 2px);
+    box-shadow: 
+        2px 2px 0px #005F80,
+        inset -4px -4px 0px rgba(0,0,0,0.4);
+}
+
+/* تصميم شريط الحساسية */
+.setting-group {
+    margin: 25px 0;
+    text-align: left; 
+}
+
+.setting-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #C0C7D1; 
+}
+
+input[type=range] {
+    -webkit-appearance: none; 
+    appearance: none;
+    width: 100%;
+    height: 20px;
+    background: #081A33; 
+    border: 3px solid #C0C7D1; 
+    box-shadow: inset -3px -3px 0px rgba(0,0,0,0.5); 
+    outline: none;
+    margin-top: 10px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 30px; 
+    background: #FF3333; 
+    border: 3px solid #FFFFFF;
+    box-shadow: 3px 3px 0px #800000; 
+    cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+    width: 14px; 
+    height: 24px;
+    background: #FF3333;
+    border: 3px solid #FFFFFF;
+    border-radius: 0; 
+    box-shadow: 3px 3px 0px #800000;
+    cursor: pointer;
+}
+
+#starfieldCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; 
+    pointer-events: none; 
+}
+
+/* شبكة المستويات */
+/* شبكة المستويات - إصلاح الخروج عن الإطار */
+.level-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px; /* تقليل الفراغ قليلاً */
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box; /* ضمان عدم التجاوز */
+}
+
+
+#floatingCurrency {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid gold;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFF;
+    z-index: 100;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+/* زر العودة العائم (يسبح في منتصف الشاشة من الأسفل) */
+
+/* أزرار المستويات */
+.level-btn {
+    padding: 8px 0; /* تقليل الحشو الداخلي */
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 0; /* يمنع الزر من التمدد خارج الشبكة */
+}
+
+/* تنسيق عرض النجوم في القائمة */
+.stars-display {
+    color: #FFD700;
+    font-size: 13px; /* تصغير النجوم لتناسب الشاشات الصغيرة */
+    margin-top: 5px;
+    letter-spacing: 1px; /* تقليل التباعد بين النجوم */
+    text-shadow: 1px 1px 2px #000;
+}
+/* حاوية المراحل القابلة للتمرير */
+/* حاوية المراحل القابلة للتمرير */
+.worlds-scroll-container {
+    max-height: 55vh; 
+    overflow-y: auto;
+    margin-bottom: 20px;
+    
+    /* إخفاء الشريط لمتصفحات Firefox و Edge */
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+
+/* إخفاء الشريط لمتصفحات Chrome و Safari و Opera */
+.worlds-scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* تصميم شريط التمرير بأسلوب مسطح */
+
+/* بطاقة المرحلة (World Card) */
+/* تحديث البطاقة الأساسية لتستجيب للحركة */
+.world-card {
+    border: 4px solid #FFFFFF;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+    border-radius: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* إضافة انتقال سلس */
+}
+
+/* تأثير الانضغاط والتوهج الجانبي لكل ثيم عند التمرير بالماوس أو اللمس */
+
+/* 1. الأزرق */
+.theme-blue:hover {
+    transform: translate(2px, 2px); /* الانضغاط للأسفل */
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.5), -8px 0px 15px -3px #00AEEF, 8px 0px 15px -3px #00AEEF; /* ظل الانضغاط + توهج جانبي أزرق */
+}
+
+/* 2. الأرجواني */
+.theme-purple:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.5), -8px 0px 15px -3px #9D50BB, 8px 0px 15px -3px #9D50BB;
+}
+
+/* 3. الأخضر */
+.theme-green:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.5), -8px 0px 15px -3px #2ECC71, 8px 0px 15px -3px #2ECC71;
+}
+
+/* 4. الأحمر */
+.theme-red:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.5), -8px 0px 15px -3px #E74C3C, 8px 0px 15px -3px #E74C3C;
+}
+
+/* 5. البرتقالي */
+.theme-orange:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.5), -8px 0px 15px -3px #F39C12, 8px 0px 15px -3px #F39C12;
+}
+
+/* 6. الفضي */
+.theme-silver:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.5), -8px 0px 15px -3px #BDC3C7, 8px 0px 15px -3px #BDC3C7;
+}
+
+/* 7. الأسود */
+.theme-black:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.5), -8px 0px 15px -3px #555555, 8px 0px 15px -3px #555555;
+}
+
+.world-card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: left;
+    text-transform: uppercase;
+    font-size: 20px;
+    letter-spacing: 2px;
+}
+
+/* ========================================= */
+/* الثيمات السبعة (الخلفية داكنة والأزرار فاتحة) */
+/* ========================================= */
+
+/* 1. الأزرق */
+.theme-blue { background-color: #041022; border-color: #00AEEF; }
+.theme-blue h3 { color: #00AEEF; }
+.theme-blue .level-btn:not(.locked) { background: #00AEEF; color: #041022; border-color: #FFFFFF; }
+.theme-blue .level-btn:not(.locked):hover { background: #008CBE; }
+
+/* 2. الأرجواني */
+.theme-purple { background-color: #1A052E; border-color: #9D50BB; }
+.theme-purple h3 { color: #9D50BB; }
+.theme-purple .level-btn:not(.locked) { background: #9D50BB; color: #1A052E; border-color: #FFFFFF; }
+.theme-purple .level-btn:not(.locked):hover { background: #7A3D99; }
+
+/* 3. الأخضر */
+.theme-green { background-color: #05200C; border-color: #2ECC71; }
+.theme-green h3 { color: #2ECC71; }
+.theme-green .level-btn:not(.locked) { background: #2ECC71; color: #05200C; border-color: #FFFFFF; }
+.theme-green .level-btn:not(.locked):hover { background: #27AE60; }
+
+/* 4. الأحمر */
+.theme-red { background-color: #220505; border-color: #E74C3C; }
+.theme-red h3 { color: #E74C3C; }
+.theme-red .level-btn:not(.locked) { background: #E74C3C; color: #220505; border-color: #FFFFFF; }
+.theme-red .level-btn:not(.locked):hover { background: #C0392B; }
+
+/* 5. البرتقالي */
+.theme-orange { background-color: #261100; border-color: #F39C12; }
+.theme-orange h3 { color: #F39C12; }
+.theme-orange .level-btn:not(.locked) { background: #F39C12; color: #261100; border-color: #FFFFFF; }
+.theme-orange .level-btn:not(.locked):hover { background: #D68910; }
+
+/* 6. الفضي */
+.theme-silver { background-color: #151515; border-color: #BDC3C7; }
+.theme-silver h3 { color: #BDC3C7; }
+.theme-silver .level-btn:not(.locked) { background: #BDC3C7; color: #151515; border-color: #FFFFFF; }
+.theme-silver .level-btn:not(.locked):hover { background: #95A5A6; }
+
+/* 7. الأسود */
+.theme-black { background-color: #000000; border-color: #555555; box-shadow: 4px 4px 0px #333333; }
+.theme-black h3 { color: #777777; }
+.theme-black .level-btn:not(.locked) { background: #555555; color: #000000; border-color: #888888; }
+.theme-black .level-btn:not(.locked):hover { background: #333333; color: #FFFFFF;}
+
+/* تصميم الأزرار المقفلة لجميع المراحل */
+.locked {
+    background: #111111 !important;
+    border-color: #333333 !important;
+    color: #555555 !important;
+    box-shadow: inset -2px -2px 0px rgba(0,0,0,0.8) !important;
+    cursor: not-allowed;
+}
+
+/* --- تنسيقات شاشة مواجهة الزعيم --- */
+#preMatchOverlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: #081A33;
+    display: flex;
+    justify-content: center; align-items: center;
+    z-index: 90; color: white;
+}
+.vs-container {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3vh; width: 90%;
+}
+.profile-card {
+    display: flex;
+    height: 10vh; min-height: 70px;
+    width: 85vw; max-width: 320px;
+    transform: skewX(-12deg); 
+}
+.avatar-box { flex: 0 0 30%; border-radius: 4px; }
+.player-avatar { background-color: #ecf0f1; }
+.enemy-avatar { background-color: #FF5733; }
+.info-box {
+    display: flex; flex-direction: column;
+    justify-content: space-between; flex: 1; margin-left: 2%;
+}
+.info-part {
+    flex: 1; background-color: rgba(255, 255, 255, 0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(14px, 4vw, 20px); font-weight: bold; border-radius: 4px;
+}
+.info-part:first-child { margin-bottom: 2%; }
+.info-part span { transform: skewX(12deg); }
+.vs-text { font-size: clamp(30px, 8vw, 50px); font-weight: bold; color: #e74c3c; font-style: italic; }
+
+/* --- تنسيقات واجهة نقاط الزعيم --- */
+#championUI {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 80;
+}
+.ui-enemy { position: absolute; top: 6px; right: 5%; display: flex; align-items: center; gap: 10px; }
+.ui-player { position: absolute; bottom: 6px; left: 5%; display: flex; align-items: center; gap: 10px; }
+.score-text { color: gold; font-size: clamp(18px, 4.5vw, 26px); font-weight: bold; line-height: 1; }
+.slots-container { display: flex; gap: 5px; align-items: center; }
+.slot-box {
+    width: clamp(14px, 3.5vw, 20px); height: clamp(7px, 1.3vh, 9px);
+    border: 2px solid gold; transform: skewX(-28deg);
+}
+
+/* تصميم الزر الأحمر الجديد */
+.btn-red {
+    background: #E74C3C;
+    color: #FFFFFF; /* نص أبيض ليكون واضحاً */
+    border: 4px solid #FFFFFF;
+    box-shadow: 
+        4px 4px 0px #081A33, 
+        inset -4px -4px 0px rgba(0,0,0,0.2);
+}
+
+.btn-red:hover {
+    background: #C0392B; /* لون أحمر داكن عند التمرير بالماوس */
+    transform: translate(2px, 2px); 
+    box-shadow: 
+        2px 2px 0px #081A33,
+        inset -4px -4px 0px rgba(0,0,0,0.2);
+}
+
+/* تعديل البطاقة الكبيرة لتأخذ مساحة أكبر وتغيير لونها للذهبي */
+#equipMenu {
+    width: 90%;
+    max-width: 600px;
+    height: 70vh; 
+    /* خلفية ذهبية متدرجة أنيقة */
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(218, 165, 32, 0.95));
+    border: 4px solid #FFFFFF; /* إطار أبيض ناصع */
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(218, 165, 32, 0.5), inset 0 0 15px rgba(0,0,0,0.2);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 45%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* تغيير لون عنوان قائمة التجهيزات ليناسب الخلفية الذهبية */
+#equipMenu h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: #081A33; /* لون اللعبة الأزرق الداكن لتباين ممتاز */
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5); /* ظل فاتح */
+}
+
+/* مستطيل المهارة (البطاقة) - لون بيج */
+.skill-card {
+    background: #FDF5E6; /* لون بيج ناعم (Old Lace) */
+    border: 2px solid #B8860B; /* إطار ذهبي داكن */
+    border-radius: 10px;
+    padding: 12px 8px;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.15);
+}
+
+.skill-card:hover {
+    transform: translateY(-2px);
+    border-color: #081A33; /* يتغير للإطار الداكن الخاص باللعبة عند التمرير */
+    box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+}
+
+/* الأيقونة داخل البطاقة البيج */
+/* حاوية المحتوى العلوي للبطاقة لضمان التوسيط المطلق */
+.skill-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* التوسيط الأفقي لجميع العناصر */
+    justify-content: center;
+    width: 100%;
+    gap: 8px; 
+}
+
+/* الأيقونة داخل البطاقة البيج */
+.skill-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 24px;
+    background: rgba(0, 0, 0, 0.05); 
+    border: 2px solid #B8860B; 
+    border-radius: 12px;
+    display: flex;
+    justify-content: center; /* توسيط الإيموجي بداخل المربع */
+    align-items: center;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    margin: 0 auto; /* هذا السطر السحري يجبر الأيقونة على البقاء في المنتصف */
+}
+/* اسم المهارة */
+/* تنسيق الصورة الجديدة داخل مربع المهارة */
+.skill-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* لضمان ملء الصورة للمربع بشكل متناسق */
+    border-radius: 10px; /* ليتناسب مع الحواف الدائرية للمربع (12px للإطار الخارجي) */
+}
+
+.skill-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: #081A33; /* لون أزرق داكن ليبرز بوضوح على البيج */
+    text-transform: uppercase;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* تصغير زر الشراء ليتناسب مع العرض الجديد */
+.skill-btn {
+    width: 95% !important; 
+    margin: 0 auto !important;
+    padding: 6px 5px;
+    font-size: 11px;
+    border-radius: 6px;
+    border: 2px solid #081A33; /* إطار داكن ليتناسب مع البطاقة البيج */
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+/* تنسيق الوصف المنبثق للأسفل بخط صغير ولون غامق */
+.skill-desc {
+    display: none;
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #B8860B; /* خط فاصل ذهبي داكن */
+    font-size: 11.5px;
+    color: #333333; /* لون رمادي داكن ليكون مقروءاً بوضوح ممتاز على البيج */
+    text-align: center;
+    line-height: 1.5;
+    font-weight: 600; /* زيادة سماكة الخط قليلاً للقراءة المريحة */
+}
+/* حاوية المهارات: تحويلها إلى شبكة تعرض بطاقتين في كل صف */
+
+/* حاوية المهارات: تحويلها إلى شبكة تعرض بطاقتين في كل صف */
+.skills-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px; 
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    align-items: start; 
+    
+    /* إخفاء شريط التمرير لمتصفحات Firefox و Edge */
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+
+/* إخفاء شريط التمرير لمتصفحات Chrome و Safari و Opera */
+.skills-container::-webkit-scrollbar {
+    display: none;
+}
+
+.btn-buy { background: #2ECC71; color: #000; }
+.btn-equip { background: #F39C12; color: #000; }
+.btn-equipped { background: #7F8C8D; color: #FFF; cursor: not-allowed; }
+
+/* تنسيق الوصف المنبثق للأسفل بخط صغير */
+/* الفئة المشتركة للبطاقتين (الشراء والتجهيز) */
+.equip-gold-card {
+    width: 90%;
+    max-width: 600px;
+    height: 72vh;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(218, 165, 32, 0.95));
+    border: 4px solid #FFFFFF;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(218, 165, 32, 0.5), inset 0 0 15px rgba(0,0,0,0.2);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.equip-gold-card h2 {
+    margin: 0 0 10px 0;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: #081A33;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5);
+}
+
+/* حاوية الخانتين العلويتين */
+.loadout-slots-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+    background: rgba(8, 26, 51, 0.15);
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px dashed rgba(8, 26, 51, 0.3);
+}
+
+.slot-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.slot-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: #081A33;
+    letter-spacing: 1px;
+}
+
+/* خانة التجهيز العلوية */
+.equip-slot {
+    width: 50px;
+    height: 50px;
+    background: #FDF5E6;
+    border: 2px dashed #B8860B;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
+}
+
+.equip-slot.drag-over {
+    border-color: #00AEEF;
+    background: #e0f7fa;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px #00AEEF;
+}
+
+.slot-placeholder {
+    font-size: 10px;
+    color: #888;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* خط فاصل */
+.loadout-divider {
+    height: 2px;
+    background: rgba(8, 26, 51, 0.2);
+    margin: 5px 0 10px 0;
+}
+
+/* أقسام صفوف المهارات */
+.inventory-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.inventory-sections::-webkit-scrollbar { display: none; }
+
+.inventory-group {
+    background: rgba(253, 245, 230, 0.4);
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(184, 134, 11, 0.3);
+}
+
+.inventory-title {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    color: #081A33;
+    margin-bottom: 6px;
+    text-align: left;
+}
+
+.inventory-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 4px;
+    min-height: 52px;
+    align-items: center;
+    scrollbar-width: none;
+}
+.inventory-row::-webkit-scrollbar { display: none; }
+
+/* عنصر المهارة القابل للسحب */
+.draggable-skill {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    border: 2px solid #B8860B;
+    background: #FDF5E6;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    cursor: grab;
+    touch-action: none;
+    flex-shrink: 0;
+    transition: transform 0.15s, opacity 0.15s;
+    user-select: none;
+}
+
+.draggable-skill:active {
+    cursor: grabbing;
+}
+
+.draggable-skill.is-dragging {
+    opacity: 0.4;
+    transform: scale(0.9);
+}
+
+.draggable-skill.equipped-highlight {
+    border-color: #2ECC71;
+    box-shadow: 0 0 8px #2ECC71;
+}
+
+/* حاوية الأزرار العائمة بالأسفل */
+.floating-nav-container {
+    position: absolute;
+    bottom: 4%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    z-index: 100;
+    width: 90%;
+    max-width: 450px;
+    justify-content: center;
+}
+
+.floating-nav-container button {
+    width: auto !important;
+    min-width: 140px;
+    margin: 0 !important;
+    padding: 10px 15px;
+    font-size: 15px;
+}
+
+.btn-equip-toggle {
+    background: #F39C12;
+    color: #081A33;
+    border: 4px solid #FFFFFF;
+    box-shadow: 4px 4px 0px #081A33;
+}
+
+/* إخفاء العنصر الأصلي أثناء سحبه */
+.hide-while-drag {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+/* تنسيق الخانة المقفلة */
+.locked-slot {
+    cursor: pointer;
+    background: #e0e0e0;
+    border-color: #999;
+}
+
+.locked-slot:hover {
+    border-color: #E74C3C;
+    background: #fadbd8;
+    box-shadow: 0 0 10px #E74C3C;
+}
+
+/* تنسيق الصورة داخل خانة التجهيز لتكون قابلة للسحب */
+.draggable-equipped {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    cursor: grab;
+    object-fit: cover;
+    touch-action: none;
+}
+.draggable-equipped:active {
+    cursor: grabbing;
+}
+/* زر المساعدة الصغير */
+.help-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px !important;
+    height: 30px;
+    min-width: 30px;
+    border-radius: 50%;
+    background: #FDF5E6;
+    color: #B8860B;
+    border: 2px solid #B8860B;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+.help-btn:hover {
+    background: #B8860B;
+    color: #FFF;
+    transform: translateY(-2px);
+}
+
+/* نافذة التعليمات المنبثقة */
+#tutorialOverlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(8, 26, 51, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tutorial-content {
+    background: linear-gradient(135deg, #081A33, #041022);
+    border: 3px solid #00AEEF;
+    border-radius: 15px;
+    padding: 20px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 0 30px rgba(0, 174, 239, 0.4);
+}
+
+.close-tutorial {
+    position: absolute;
+    top: -15px; right: -15px;
+    width: 35px !important; height: 35px;
+    min-width: 35px;
+    border-radius: 50%;
+    background: #E74C3C; color: #FFF;
+    border: 3px solid #FFF;
+    font-weight: bold; font-size: 16px;
+    cursor: pointer;
+    display: flex; justify-content: center; align-items: center;
+    padding: 0 !important; margin: 0 !important;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+.tutorial-screen {
+    position: relative;
+    width: 100%; height: 250px;
+    background: #020813;
+    border: 2px solid #333;
+    border-radius: 10px;
+    margin-top: 10px;
+    overflow: hidden;
+    display: flex;
+}
+
+.split-line {
+    position: absolute;
+    top: 0; left: 50%;
+    width: 2px; height: 100%;
+    background: repeating-linear-gradient(to bottom, #555, #555 10px, transparent 10px, transparent 20px);
+    transform: translateX(-50%);
+}
+
+.tut-side {
+    flex: 1;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    position: relative;
+    font-size: 14px; font-weight: bold; text-transform: uppercase;
+}
+
+.tap-text {
+    font-size: 11px;
+    color: #FFF;
+    opacity: 0.7;
+    margin-top: 5px;
+}
+
+.tut-paddle {
+    position: absolute;
+    bottom: 15px; left: 50%; transform: translateX(-50%);
+    width: 60px; height: 12px;
+    background: #ecf0f1; border-radius: 6px;
+}
+
+.tut-boss {
+    position: absolute;
+    top: 15px; left: 50%; transform: translateX(-50%);
+    width: 80px; height: 25px;
+    background: #E74C3C; border-radius: 4px;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 10px; font-weight: bold; color: white;
+}
+
+/* حركة النقرة المزدوجة المتوهجة */
+.tap-circle {
+    position: absolute;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    top: 40%;
+    animation: doubleTapAnim 2s infinite;
+}
+
+.tut-left .tap-circle { background: rgba(46, 204, 113, 0.5); box-shadow: 0 0 15px #2ECC71;}
+.tut-right .tap-circle { background: rgba(243, 156, 18, 0.5); box-shadow: 0 0 15px #F39C12;}
+
+@keyframes doubleTapAnim {
+    0%, 100% { transform: scale(0); opacity: 0; }
+    10% { transform: scale(1); opacity: 1; }
+    20% { transform: scale(0.5); opacity: 0.5; }
+    30% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0; }
+}
+/* نظام الإشعارات المخصص داخل اللعبة */

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title> Fragment </title>
+    <link rel="stylesheet" href="style.css">
+   
+    <!-- سكريبت إعلانات جوجل لألعاب الويب -->
+<!-- سكريبت إعلانات جوجل لألعاب الويب مع معرّف حسابك -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7049229947901627" crossorigin="anonymous" ></script>
+<script>
+    window.adsbygoogle = window.adsbygoogle || [];
+    const adBreak = (adConfig) => { adsbygoogle.push(adConfig); };
+</script>
+    
+</head>
+<body>
+    <canvas id="starfieldCanvas"></canvas>
+    
+<div id="mainMenu" class="menu-container">
+    <img src="images/logoname.png" alt="Game Logo" class="game-logo">
+    
+    <!-- الزر الأول -->
+    <button onclick="showLevelSelect()"> Free Mode</button>
+    
+    <!-- الزر الجديد (في المنتصف وباللون الأحمر) -->
+    <button class="btn-red" onclick="showEquipMenu()"> To Equip</button>
+    
+    <!-- الزر الأخير -->
+    <button class="btn-secondary" onclick="showSettings()"> Settings</button>
+</div>
+
+<!-- شاشة التجهيزات الجديدة (مخفية افتراضياً) -->
+<!-- مستطيل العملة العائم في الزاوية العلوية -->
+<!-- مستطيل العملة العائم في الزاوية العلوية -->
+<div id="floatingCurrency" class="hidden">
+     <span id="playerCurrencyUI" style="color: gold;">0</span> C
+</div>
+
+<!-- بطاقة الشراء (Equipment Shop) -->
+<div id="equipMenu" class="menu-container equip-gold-card hidden">
+    <h2>SKILL SHOP</h2>
+    <button onclick="watchAdSenseReward()" style="width: 95%; padding: 10px; margin-bottom: 15px; background: #2ECC71; color: #081A33; border: 2px solid #081A33; border-radius: 10px; font-weight: bold; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);">
+        📺 Watch Ad (+30 C)
+    </button>
+    
+    <div id="skillsContainer" class="skills-container"></div>
+</div>
+    
+    
+
+<!-- بطاقة التجهيز الجديدة (Equip Loadout) -->
+<div id="loadoutMenu" class="menu-container equip-gold-card hidden">
+    <button class="help-btn" onclick="showTutorial()">?</button>
+    
+    <h2>EQUIP LOADOUT</h2>
+    
+    <!-- الخانات العلوية للتجهيز -->
+    <div class="loadout-slots-container">
+        <div class="slot-wrapper">
+            <span class="slot-title">PRIMARY</span>
+            <div id="primarySlot" class="equip-slot" data-slot-type="primary">
+                <span class="slot-placeholder">Empty</span>
+            </div>
+        </div>
+        <div class="slot-wrapper">
+            <span class="slot-title">SECONDARY</span>
+            <div id="secondarySlot" class="equip-slot" data-slot-type="secondary">
+                <span class="slot-placeholder">Empty</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- خط فاصل -->
+    <div class="loadout-divider"></div>
+
+    <!-- صفوف المهارات المملوكة في الأسفل -->
+    <div class="inventory-sections">
+        <div class="inventory-group">
+            <span class="inventory-title">Primary Skills (Main)</span>
+            <div id="primaryInventoryRow" class="inventory-row"></div>
+        </div>
+        <div class="inventory-group">
+            <span class="inventory-title">Secondary Skills (Sub)</span>
+            <div id="secondaryInventoryRow" class="inventory-row"></div>
+        </div>
+    </div>
+</div>
+
+<!-- حاوية الأزرار العائمة في الأسفل -->
+<div id="floatingNavContainer" class="floating-nav-container hidden">
+    <button id="floatingBackBtn" class="btn-secondary" onclick="showMainMenu()">Back to Menu</button>
+    <button id="floatingToggleBtn" class="btn-equip-toggle" onclick="toggleShopAndLoadout()">To Equip</button>
+</div>
+    
+<div id="settingsMenu" class="menu-container hidden">
+    <h2>Settings</h2>
+    <div class="setting-group">
+        <label for="sensSlider">Paddle Sensitivity: <span id="sensValue">6</span></label>
+        <input type="range" id="sensSlider" min="0" max="10" step="1" value="6" oninput="updateSensitivity()">
+    </div>
+    
+    <!-- شريط التحكم بمستوى صوت الموسيقى (الجديد) -->
+    <div class="setting-group">
+        <label for="musicSlider">Music Volume: <span id="musicValue">50%</span></label>
+        <input type="range" id="musicSlider" min="0" max="100" step="1" value="50" oninput="updateMusicVolume()">
+    </div>
+    
+    <button class="btn-secondary" onclick="showMainMenu()"> Back to Menu</button>
+</div>
+
+   <div id="levelSelectMenu" class="menu-container hidden">
+    <h2>Select Level</h2>
+    <!-- الحاوية الجديدة التي ستضم جميع البطاقات -->
+    <div id="worldsContainer" class="worlds-scroll-container"></div>
+    <button class="btn-secondary" onclick="showMainMenu()"> Back to Menu</button>
+</div>
+    
+<div id="gameOverMenu" class="menu-container hidden">
+    <h1 id="resultTitle" style="color: #00AEEF;">GAME OVER</h1>
+    <h2>Score: <span id="finalScore" style="color: #FFFFFF;">0</span></h2>
+    <!-- السطر الجديد لعرض العملات المكتسبة -->
+    <h3 id="earnedCurrencyDisplay" style="color: gold; display: none;">Earned: +<span id="earnedCurrency">0</span> C</h3>
+    
+    <button id="resultActionBtn" onclick="retryLevel()"> Retry Level</button>
+    <button class="btn-secondary" onclick="showMainMenu()"> Back to Menu</button>
+</div>
+
+    <!-- شاشة المواجهة (الزعيم) -->
+<div id="preMatchOverlay" style="display: none;">
+    <div class="vs-container">
+        <div class="profile-card">
+            <div class="avatar-box player-avatar"></div>
+            <div class="info-box">
+                <div class="info-part"><span>Player</span></div>
+                <div class="info-part"><span>Skill: Pro</span></div>
+            </div>
+        </div>
+        <div class="vs-text">VS</div>
+        <div class="profile-card">
+            <div class="avatar-box enemy-avatar" id="bossAvatar"></div>
+            <div class="info-box">
+                <div class="info-part"><span id="bossName">Boss</span></div>
+                <div class="info-part"><span>Skill: MAX</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- واجهة اللعب الخاصة بالزعيم (النقاط والشحنات) -->
+<div id="championUI" style="display: none;">
+    <div class="ui-enemy">
+        <div class="slots-container">
+            <div class="slot-box enemy-slot"></div>
+            <div class="slot-box enemy-slot"></div>
+            <div class="slot-box enemy-slot"></div>
+        </div>
+        <div class="score-text" id="enemyScoreUI">0</div>
+    </div>
+    <div class="ui-player">
+        <div class="score-text" id="playerScoreUI">0</div>
+        <div class="slots-container">
+            <div class="slot-box player-slot"></div>
+            <div class="slot-box player-slot"></div>
+            <div class="slot-box player-slot"></div>
+        </div>
+    </div>
+</div>
+    
+    <!-- شاشة تعليمات المهارات (التوضيح المرئي) -->
+<div id="tutorialOverlay" class="hidden">
+    <div class="tutorial-content">
+        <button class="close-tutorial" onclick="hideTutorial()">X</button>
+        <h3 style="color: #00AEEF; margin-top: 0; text-transform: uppercase;">How to Use Skills</h3>
+        <p style="font-size: 13px; color: #C0C7D1; margin-bottom: 15px;">Double tap quickly on either side during the match!</p>
+        
+        <div class="tutorial-screen">
+            <div class="split-line"></div>
+            
+            <!-- الجانب الأيسر (المهارة الثانوية) -->
+            <div class="tut-side tut-left">
+                <div class="tap-circle"></div>
+                <span style="color:#2ECC71;">Secondary</span>
+                <span class="tap-text">Double Tap</span>
+            </div>
+            
+            <!-- الجانب الأيمن (المهارة الرئيسية) -->
+            <div class="tut-side tut-right">
+                <div class="tap-circle"></div>
+                <span style="color:#F39C12;">Primary</span>
+                <span class="tap-text">Double Tap</span>
+            </div>
+
+            <div class="tut-boss">BOSS</div>
+            <div class="tut-paddle"></div>
+        </div>
+    </div>
+</div>
+    
+<canvas id="gameCanvas"></canvas>
+    
+<script src="levels.js"></script>
+    <script src="skill.js"></script>
+    <script src="champion.js"></script>
+    <script src="skillplayer.js"></script>
+<script src="ui.js"></script>
+    <script src="gameSetup.js"></script>
+    <script src="gamePhysics.js"></script>
+</body>
+</html>
